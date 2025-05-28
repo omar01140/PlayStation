@@ -1,0 +1,112 @@
+.card{
+  width: 500px;
+  height: 275px;
+  display: flex;
+  border: black 1px solid;
+  box-shadow: #959595 0px 3px 5px 0px;
+  border-radius: 10px;
+  background-color: white;
+  .left{
+    max-width: 150px;
+    img{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+  .right{
+    width: 100%;
+    padding: 20px 10px;
+    position: relative;
+    .name{
+      display: flex;
+      justify-content: space-between;
+      font-size: 20px;
+      font-weight: 500;
+      .ps{
+        position: relative;
+        top: -10px;
+      }
+      >svg{
+        cursor: pointer;
+        position: relative;
+        top: 3px;
+      }
+    }
+    .timer{
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      button{
+        cursor: pointer;
+        padding: 8px 20px;
+        background-color: #048E09;
+        color: white;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        font-size: 16px;
+        transition: all .3s;
+        &:hover{
+          background-color: #027806;
+        }
+      }
+      button.stop{
+        background-color: #C20000;
+      &:hover{
+          background-color: #a60000;
+        }
+      }
+      >span{
+        font-size: 24px;
+        font-weight: 500;
+      }
+    }
+    .orders{
+      margin-top: 15px;
+      .add{
+        width: 100%;
+        background-color: black;
+        box-sizing: border-box;
+        color: white;
+        padding: 8px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        div{
+          display: flex;
+          gap: 10px;
+        }
+      }
+      .recent{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 14px;
+        padding: 5px 15px;
+        img{
+          width: 11px;
+          height: 11px;
+        }
+      }
+    }
+    .end{
+      width: calc(100% - 20px);
+      display: flex;
+      justify-content: space-between;
+      font-size: 20px;
+      font-weight: 500;
+      position: absolute;
+      bottom: 20px;
+      div{
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+    }
+  }
+}
+.custom-menu {
+  background-color: #222;
+  border: 1px solid #444;
+}
