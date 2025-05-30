@@ -27,14 +27,14 @@
     </div>
     <div class="timer">
       <span>{{hours()}}:{{minutes()}}</span>
-      @if(StartBtn()){
+      @if(StartBtn() == true){
         <button (click)="start()">
           <svg width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg">
   <path d="M10 5.75001L0.25 11.3792V0.12085L10 5.75001Z" fill="white"/>
           </svg>
           <span>Start</span>
         </button>
-      } @else if (!StartBtn()) {
+      } @else if (StartBtn() == false) {
         <button (click)="end()" class="stop">
           <svg width="11" height="11" viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg">
 <rect y="0.25" width="11" height="11" fill="white"/>
