@@ -1,38 +1,81 @@
-import { Injectable, signal, Signal } from '@angular/core';
+import { Injectable, signal, Signal, WritableSignal } from '@angular/core';
 
+interface StopwatchState {
+  hours: WritableSignal<string>;
+  minutes: WritableSignal<string>;
+  seconds: WritableSignal<string>;
+  StartBtn: WritableSignal<boolean>;
+  elapsedTime: number;
+  interval: any | null;
+  startTime: number;
+}
 @Injectable({
   providedIn: 'root'
 })
 export class CardService {
-  StartBtn = signal(true)
-  minutes = signal('00')
-  hours = signal('00')
-  interval: any = null;
-  startTime: number = 0;
-  elapsedTime: number = 0;
+  private stopwatches = new Map<string, StopwatchState>();
 
-  onStart() {
-    if (this.interval) return;
-    this.StartBtn.set(false);
+  initStopwatch(id: string) {
+    if (!this.stopwatches.has(id)) {
+      this.stopwatches.set(id, {
+        hours: signal('00'),
+        minutes: signal('00'),
+        seconds: signal('00'),
+        StartBtn: signal(true),
+        elapsedTime: 0,
+        interval: null,
+        startTime: 0
+      });
+    }
+  }
 
-    this.startTime = Date.now() - this.elapsedTime;
-    this.interval = setInterval(() => {
-      this.elapsedTime = Date.now() - this.startTime;
-      const totalSeconds = Math.floor(this.elapsedTime / 1000);
-      this.hours.set(String(Math.floor(totalSeconds / 3600)).padStart(2, '0'))
-      this.minutes.set(String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0'))
-      console.log(totalSeconds)
+  getHours(id: string): Signal<string> {
+    this.initStopwatch(id);
+    return this.stopwatches.get(id)!.hours;
+  }
+
+  getMinutes(id: string): Signal<string> {
+    this.initStopwatch(id);
+    return this.stopwatches.get(id)!.minutes;
+  }
+
+  getSeconds(id: string): Signal<string> {
+    this.initStopwatch(id);
+    return this.stopwatches.get(id)!.seconds;
+  }
+
+  getStartBtn(id: string): Signal<boolean> {
+    this.initStopwatch(id);
+    return this.stopwatches.get(id)!.StartBtn;
+  }
+
+  onStart(id: string) {
+    this.initStopwatch(id);
+    const stopwatch = this.stopwatches.get(id)!;
+
+    if (stopwatch.interval) return;
+    stopwatch.StartBtn.set(false);
+
+    stopwatch.startTime = Date.now() - stopwatch.elapsedTime;
+    stopwatch.interval = setInterval(() => {
+      stopwatch.elapsedTime = Date.now() - stopwatch.startTime;
+      const totalSeconds = Math.floor(stopwatch.elapsedTime / 1000);
+      stopwatch.hours.set(String(Math.floor(totalSeconds / 3600)).padStart(2, '0'))
+      stopwatch.minutes.set(String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0'))
+      stopwatch.seconds.set(String(totalSeconds % 60).padStart(2, '0'));
+      console.log('from inside the interval', id, this.getMinutes(id)(), this.getSeconds(id)());
     }, 1000);
   }
 
-  onEnd() {
-      console.log('end');
+  onEnd(id: string) {
+    this.initStopwatch(id);
+    const stopwatch = this.stopwatches.get(id)!;
 
-    this.StartBtn.set(true);
-    this.hours.set('00')
-    this.minutes.set('00')
-    this.elapsedTime = 0;
-    clearInterval(this.interval)
-    this.interval = null;
+    stopwatch.StartBtn.set(true);
+    stopwatch.hours.set('00')
+    stopwatch.minutes.set('00')
+    stopwatch.elapsedTime = 0;
+    clearInterval(stopwatch.interval)
+    stopwatch.interval = null;
   }
 }

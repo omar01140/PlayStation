@@ -1,4 +1,4 @@
-import { Component, inject} from '@angular/core';
+import { Component, inject, Input} from '@angular/core';
 import {MatMenuModule} from '@angular/material/menu';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { CardService } from '../../shared/card.service';
@@ -11,17 +11,25 @@ import { CardService } from '../../shared/card.service';
   styleUrl: './card.component.css'
 })
 export class CardComponent {
-  // private cardService = new CardService();
+  @Input({ required: true }) id!: string;
   private cardService = inject(CardService)
 
-  StartBtn = this.cardService.StartBtn
-  minutes = this.cardService.minutes
-  hours = this.cardService.hours
+  StartBtn = this.cardService.getStartBtn(this.id)
+  minutes = this.cardService.getMinutes(this.id)
+  hours = this.cardService.getHours(this.id)
+
+  ngOnInit() {
+    this.cardService.initStopwatch(this.id);
+
+    this.StartBtn = this.cardService.getStartBtn(this.id)
+    this.minutes = this.cardService.getMinutes(this.id)
+    this.hours = this.cardService.getHours(this.id)
+  }
 
   start(){
-    this.cardService.onStart()
+    this.cardService.onStart(this.id)
   }
   end(){
-    this.cardService.onEnd();
+    this.cardService.onEnd(this.id);
   }
 }
