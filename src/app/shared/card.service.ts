@@ -13,6 +13,15 @@ interface StopwatchState {
   providedIn: 'root'
 })
 export class CardService {
+  //add card
+  IDs:string[] = [];
+  counter= 0;
+  addCard(){
+    this.counter++;
+    this.IDs.push(this.counter.toString())
+  }
+
+  //timer functionality
   private stopwatches = new Map<string, StopwatchState>();
 
   initStopwatch(id: string) {
