@@ -1,11 +1,7 @@
 <div class="container">
-  @for (id of IDs(); track $index) {
-    <app-card [id]=id/>
+  @for (id of IDs(); track id) {
+    <app-card [id]=id (remove)="removeCard($event)"/>
   }
-  <!-- <app-card id="2"/>
-  <app-card id="3"/>
-  <app-card id="4"/>
-  <app-card id="5"/> -->
   <button (click)="addCard()">
     <svg width="150" height="150" viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g clip-path="url(#clip0_31_1905)">

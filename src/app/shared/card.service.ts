@@ -13,12 +13,13 @@ interface StopwatchState {
   providedIn: 'root'
 })
 export class CardService {
-  //add card
-  IDs:string[] = [];
-  counter= 0;
-  addCard(){
-    this.counter++;
-    this.IDs.push(this.counter.toString())
+  //remove card
+  removeStopwatch(id: string) {
+    const stopwatch = this.stopwatches.get(id);
+    if (stopwatch?.interval) {
+      clearInterval(stopwatch.interval);
+    }
+    this.stopwatches.delete(id);
   }
 
   //timer functionality

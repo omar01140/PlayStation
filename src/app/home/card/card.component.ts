@@ -1,4 +1,4 @@
-import { Component, inject, Input} from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output} from '@angular/core';
 import {MatMenuModule} from '@angular/material/menu';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { CardService } from '../../shared/card.service';
@@ -12,6 +12,8 @@ import { CardService } from '../../shared/card.service';
 })
 export class CardComponent {
   @Input({ required: true }) id!: string;
+  @Output() remove = new EventEmitter<string>()
+
   private cardService = inject(CardService)
 
   StartBtn = this.cardService.getStartBtn(this.id)
@@ -31,5 +33,8 @@ export class CardComponent {
   }
   end(){
     this.cardService.onEnd(this.id);
+  }
+  onRemove(){
+    this.remove.emit(this.id)
   }
 }

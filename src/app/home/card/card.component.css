@@ -110,3 +110,16 @@
   background-color: #222;
   border: 1px solid #444;
 }
+.deleteDevice{
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  cursor: pointer;
+  padding-bottom: 5px;
+  p{
+    margin: 0;
+    color: red;
+    font-size: 16px;
+    font-weight: 500;
+  }
+}
