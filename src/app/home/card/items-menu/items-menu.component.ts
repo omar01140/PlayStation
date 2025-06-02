@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { ItemComponent } from "./item/item.component";
 
 @Component({
@@ -8,6 +8,6 @@ import { ItemComponent } from "./item/item.component";
   templateUrl: './items-menu.component.html',
   styleUrl: './items-menu.component.css'
 })
-export class ItemsMenuComponent {
-
+export class ItemsMenuComponent{
+  closed = input.required();
 }

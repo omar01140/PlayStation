@@ -22,8 +22,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 /* Scrollbar container */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 10px;
+  height: 10px;
 }
 
 /* Track */

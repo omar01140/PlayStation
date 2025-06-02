@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 
 @Component({
   selector: 'app-item',
@@ -8,5 +8,9 @@ import { Component } from '@angular/core';
   styleUrl: './item.component.css'
 })
 export class ItemComponent {
+  closed = signal(true);
 
+  onclick(){
+    this.closed.set(!this.closed())
+  }
 }

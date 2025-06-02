@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Input, Output} from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output, signal} from '@angular/core';
 import {MatMenuModule} from '@angular/material/menu';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { CardService } from '../../shared/card.service';
@@ -21,6 +21,8 @@ export class CardComponent {
   minutes = this.cardService.getMinutes(this.id)
   hours = this.cardService.getHours(this.id)
 
+  closed = signal(true);
+
   ngOnInit() {
     this.cardService.initStopwatch(this.id);
 
@@ -37,5 +39,9 @@ export class CardComponent {
   }
   onRemove(){
     this.remove.emit(this.id)
+  }
+
+  onOpenMenu(){
+    this.closed.set(!this.closed())
   }
 }

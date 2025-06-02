@@ -134,3 +134,9 @@
     font-weight: 500;
   }
 }
+svg{
+  transition: all 500ms;
+}
+.reverse{
+  transform: rotatex(180deg);
+}
