@@ -1,0 +1,14 @@
+div{
+  height: 210px;
+  position: absolute;
+  background: white;
+  color: black;
+  border: black 2px solid;
+  width: 100%;
+  left: 0;
+  box-sizing: border-box;
+  z-index: 1;
+  border-radius:0px 0px 10px 10px;
+  box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.261);
+  overflow-y: scroll;
+}

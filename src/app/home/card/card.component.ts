@@ -2,11 +2,12 @@ import { Component, EventEmitter, inject, Input, Output} from '@angular/core';
 import {MatMenuModule} from '@angular/material/menu';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { CardService } from '../../shared/card.service';
+import { ItemsMenuComponent } from "./items-menu/items-menu.component";
 
 @Component({
   selector: 'app-card',
   standalone: true,
-  imports: [MatMenuModule, MatSlideToggleModule],
+  imports: [MatMenuModule, MatSlideToggleModule, ItemsMenuComponent],
   templateUrl: './card.component.html',
   styleUrl: './card.component.css'
 })

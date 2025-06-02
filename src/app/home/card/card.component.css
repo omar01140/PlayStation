@@ -64,18 +64,29 @@
     }
     .orders{
       margin-top: 15px;
-      .add{
+      .container{
+        position: relative;
         width: 100%;
-        background-color: black;
-        box-sizing: border-box;
-        color: white;
-        padding: 8px 20px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        div{
+        .add{
+          width: 100%;
+          cursor: pointer;
+          background-color: black;
+          box-sizing: border-box;
+          color: white;
+          padding: 8px 20px;
           display: flex;
-          gap: 10px;
+          justify-content: space-between;
+          align-items: center;
+          &:hover{
+            background-color: #222;
+          }
+          div{
+            display: flex;
+            gap: 10px;
+          }
+          .menu{
+            width: 100%;
+          }
         }
       }
       .recent{
