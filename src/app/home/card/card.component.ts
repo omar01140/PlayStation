@@ -3,11 +3,12 @@ import {MatMenuModule} from '@angular/material/menu';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { CardService } from '../../shared/card.service';
 import { ItemsMenuComponent } from "./items-menu/items-menu.component";
+import { OrdresMenuComponent } from "./ordres-menu/ordres-menu.component";
 
 @Component({
   selector: 'app-card',
   standalone: true,
-  imports: [MatMenuModule, MatSlideToggleModule, ItemsMenuComponent],
+  imports: [MatMenuModule, MatSlideToggleModule, ItemsMenuComponent, OrdresMenuComponent],
   templateUrl: './card.component.html',
   styleUrl: './card.component.css'
 })

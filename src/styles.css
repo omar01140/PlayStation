@@ -19,6 +19,9 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   font-size: 15px !important;
   font-weight: 500 !important;
 }
+.mat-expansion-panel-body {
+  padding: 0 !important;
+}
 
 /* Scrollbar container */
 ::-webkit-scrollbar {

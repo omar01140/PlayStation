@@ -1,6 +1,6 @@
 .card{
   width: 450px;
-  height: 275px;
+  min-height: 275px;
   display: flex;
   border: black 1px solid;
   box-shadow: #959595 0px 3px 5px 0px;
@@ -8,6 +8,7 @@
   background-color: white;
   .left{
     max-width: 150px;
+    max-height: 275px;
     img{
       width: 100%;
       height: 100%;
@@ -17,7 +18,6 @@
   .right{
     width: 100%;
     padding: 20px 10px;
-    position: relative;
     .name{
       display: flex;
       justify-content: space-between;
@@ -89,26 +89,13 @@
           }
         }
       }
-      .recent{
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 14px;
-        padding: 5px 15px;
-        img{
-          width: 11px;
-          height: 11px;
-        }
-      }
     }
     .end{
-      width: calc(100% - 20px);
       display: flex;
       justify-content: space-between;
       font-size: 20px;
       font-weight: 500;
-      position: absolute;
-      bottom: 20px;
+      margin-top: 8px;
       div{
         display: flex;
         align-items: center;

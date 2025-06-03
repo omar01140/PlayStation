@@ -1,0 +1,15 @@
+.mat-expansion-panel-header {
+  background-color: white;
+  padding: 0 10px;
+  font-size: 14px ;
+  height: 30px !important;
+}
+.mat-expansion-panel {
+  border-radius: 0;
+  box-shadow: none;
+}
+.mat-expansion-panel:not([class*=mat-elevation-z]){
+  box-shadow: none;
+}
+
+

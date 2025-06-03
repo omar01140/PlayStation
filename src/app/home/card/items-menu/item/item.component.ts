@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-item',
@@ -8,9 +8,20 @@ import { Component, signal } from '@angular/core';
   styleUrl: './item.component.css'
 })
 export class ItemComponent {
-  closed = signal(true);
+  @Input() menuType: 'items' | 'orders' = 'items';
+  quantity: number = 0;
 
-  onclick(){
-    this.closed.set(!this.closed())
+  increment(): void {
+    this.quantity++;
+  }
+
+  decrement(): void {
+    if (this.quantity > 0) {
+      this.quantity--;
+    }
+  }
+
+  remove(){
+    console.log('removed');
   }
 }
