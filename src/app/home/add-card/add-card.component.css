@@ -1,0 +1,120 @@
+.backdrop {
+  background-color: rgba(0, 0, 0, 0.9);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 1;
+}
+
+dialog {
+  position: fixed;
+  top: 50% !important;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 30rem;
+  background-color: white;
+  border-radius: 6px;
+  border: none;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  padding: 1rem;
+  top: 5rem;
+  z-index: 2;
+}
+
+.image-options {
+  display: flex;
+  justify-content: flex-start;
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.image-options label {
+  cursor: pointer;
+  transition: transform 0.2s;
+  border: 2px solid black;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.image-options input[type="radio"] {
+  display: none;
+}
+
+.image-options .frame{
+  width: 180px;
+  height: 180px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.image-options img {
+  height: 100%;
+}
+
+.image-options input[type="radio"]:hover + .frame {
+  transform: scale(1.05);
+}
+label:has(input[type="radio"]:checked) {
+  border: 2px solid #00b2ff;
+  background-color: #00b3ff0b;
+}
+
+.custom {
+  p{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin: 0;
+    input{
+      height: 16px;
+      width: 16px;
+    }
+  }
+  input{
+    height: 25px;
+    width: 60%;
+    &::placeholder{
+      font-size: large;
+    }
+  }
+}
+.actions{
+  display: flex;
+  justify-content: flex-end;
+  margin: 30px 0 0
+}
+button {
+  font: inherit;
+  cursor: pointer;
+  border: none;
+  padding: 0.35rem 1.25rem;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+button[type="button"] {
+  color: black;
+}
+
+button[type="button"]:hover,
+button[type="button"]:active {
+  color: rgba(0, 0, 0, 0.714);
+}
+
+button[type="submit"] {
+  color: white;
+  background-color: black;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+button[type="submit"]:hover,
+button[type="submit"]:active {
+  background-color: rgba(0, 0, 0, 0.713);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
+}

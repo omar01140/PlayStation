@@ -1,11 +1,12 @@
 import { Component, effect, inject, signal } from '@angular/core';
 import { CardComponent } from "./card/card.component";
 import { CardService } from '../shared/card.service';
+import { AddCardComponent } from "./add-card/add-card.component";
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CardComponent],
+  imports: [CardComponent, AddCardComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
@@ -13,6 +14,7 @@ export class HomeComponent {
   cardService= inject(CardService)
   IDs= signal<string[]>([]);
   counter= 0;
+  AddingTask = false;
 
   constructor() {
     // Initialize from localStorage
@@ -37,5 +39,12 @@ export class HomeComponent {
   removeCard(id: string) {
     this.IDs.update(ids => ids.filter(existingId => existingId !== id));
     this.cardService.removeStopwatch(id);
+  }
+
+  onAddingCard(){
+    this.AddingTask = true;
+  }
+  onCancelAddingCard(){
+    this.AddingTask = false;
   }
 }

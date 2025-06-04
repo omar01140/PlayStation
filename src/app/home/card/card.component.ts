@@ -14,6 +14,7 @@ import { OrdresMenuComponent } from "./ordres-menu/ordres-menu.component";
 })
 export class CardComponent {
   @Input({ required: true }) id!: string;
+  @Input({ required: true }) index!: string;
   @Output() remove = new EventEmitter<string>()
 
   private cardService = inject(CardService)
