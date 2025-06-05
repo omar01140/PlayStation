@@ -22,6 +22,7 @@ export class CardComponent {
   StartBtn = this.cardService.getStartBtn(this.id)
   minutes = this.cardService.getMinutes(this.id)
   hours = this.cardService.getHours(this.id)
+  deviceImage: string = '';
 
   closed = signal(true);
 
@@ -31,6 +32,7 @@ export class CardComponent {
     this.StartBtn = this.cardService.getStartBtn(this.id)
     this.minutes = this.cardService.getMinutes(this.id)
     this.hours = this.cardService.getHours(this.id)
+    this.deviceImage = this.cardService.getDeviceImage(this.id);
   }
 
   start(){

@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { CardService } from '../../shared/card.service';
 
 @Component({
   selector: 'app-add-card',
@@ -13,17 +14,23 @@ export class AddCardComponent {
 
   deviceType ="";
   customPrice: number | null = null;
-  custom="";
+  custom=false;
 
+  cardService= inject(CardService);
 
   onCancel(){
+    this.deviceType = '';
+    this.custom = false;
+    this.customPrice = null;
     this.cancel.emit()
   }
   onSubmit(){
-    console.log('deviceType',this.deviceType);
-    console.log(this.custom);
-    console.log(this.customPrice);
-
-    this.cancel.emit()
+    if (this.deviceType) {
+      console.log('deviceType',this.deviceType);
+      console.log(this.custom);
+      console.log(this.customPrice);
+      this.cardService.addCard(this.deviceType);
+      this.cancel.emit();
+    }
   }
 }
