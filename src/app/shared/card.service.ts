@@ -20,17 +20,53 @@ export class CardService {
   //add card
   counter= 0;
   constructor() {
-    const saved = localStorage.getItem('cards-array');
-    if (saved !== null) {
-      const parsed = JSON.parse(saved);
-      if (Array.isArray(parsed)) {
-        this.IDs.set(parsed); // Set initial IDs from localStorage
-        // Update counter to avoid duplicate IDs
-        this.counter = Math.max(...parsed.map(id => parseInt(id) || 0), 0);
+    // Load cards from localStorage
+    const savedIDs = localStorage.getItem('cards-array');
+    const savedCards = localStorage.getItem('cards-state');
+    if (savedIDs !== null && savedCards !== null) {
+      const parsedIDs = JSON.parse(savedIDs);
+      const parsedCards = JSON.parse(savedCards);
+      if (Array.isArray(parsedIDs) && typeof parsedCards === 'object') {
+        this.IDs.set(parsedIDs);
+        this.counter = Math.max(...parsedIDs.map((id: string) => parseInt(id) || 0), 0);
+        // Restore card states
+        for (const id of parsedIDs) {
+          const state = parsedCards[id];
+          if (state) {
+            this.cards.set(id, {
+              hours: signal(state.hours || '00'),
+              minutes: signal(state.minutes || '00'),
+              seconds: signal(state.seconds || '00'),
+              StartBtn: signal(state.StartBtn !== undefined ? state.StartBtn : true),
+              elapsedTime: state.elapsedTime || 0,
+              interval: null, // Will be reinitialized for running stopwatches
+              startTime: state.startTime || 0,
+              deviceType: state.deviceType || 'ps4' // Fallback, should be set by addCard
+            });
+            // Resume running stopwatch
+            if (!state.StartBtn) {
+              this.resumeStopwatch(id);
+            }
+          }
+        }
       }
     }
+    // Save cards to localStorage on change
     effect(() => {
       localStorage.setItem('cards-array', JSON.stringify(this.IDs()));
+      const cardsState: { [key: string]: any } = {};
+      this.cards.forEach((state, id) => {
+        cardsState[id] = {
+          hours: state.hours(),
+          minutes: state.minutes(),
+          seconds: state.seconds(),
+          StartBtn: state.StartBtn(),
+          elapsedTime: state.elapsedTime,
+          startTime: state.startTime,
+          deviceType: state.deviceType
+        };
+      });
+      localStorage.setItem('cards-state', JSON.stringify(cardsState));
     });
   }
 
@@ -40,8 +76,11 @@ export class CardService {
     this.IDs.update(()=>[...this.IDs(),this.counter.toString()])
     this.initStopwatch(id, deviceType);
   }
+  getDeviceType(id: string){
+    return this.cards.get(id)!.deviceType;
+  }
   getDeviceImage(id: string): string {
-    this.initStopwatch(id); // Ensure card exists
+    this.initStopwatch(id);
     const deviceType = this.cards.get(id)!.deviceType;
     const imageMap: { [key: string]: string } = {
       ps4: '/assets/ps4.png',
@@ -61,7 +100,7 @@ export class CardService {
   }
 
   //timer functionality
-  initStopwatch(id: string, deviceType: string = 'ps4') {
+  initStopwatch(id: string, deviceType?: string) {
     if (!this.cards.has(id)) {
       this.cards.set(id, {
         hours: signal('00'),
@@ -71,7 +110,7 @@ export class CardService {
         elapsedTime: 0,
         interval: null,
         startTime: 0,
-        deviceType
+        deviceType: deviceType || 'ps4'
       });
     }
   }
@@ -124,5 +163,19 @@ export class CardService {
     stopwatch.elapsedTime = 0;
     clearInterval(stopwatch.interval)
     stopwatch.interval = null;
+  }
+
+  private resumeStopwatch(id: string) {
+    const card = this.cards.get(id);
+    if (card && !card.StartBtn()) {
+      card.startTime = Date.now() - card.elapsedTime;
+      card.interval = setInterval(() => {
+        card.elapsedTime = Date.now() - card.startTime;
+        const totalSeconds = Math.floor(card.elapsedTime / 1000);
+        card.hours.set(Math.floor(totalSeconds / 3600).toString().padStart(2, '0'));
+        card.minutes.set(Math.floor((totalSeconds % 3600) / 60).toString().padStart(2, '0'));
+        card.seconds.set((totalSeconds % 60).toString().padStart(2, '0'));
+      }, 1000);
+    }
   }
 }

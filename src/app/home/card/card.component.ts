@@ -4,11 +4,12 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { CardService } from '../../shared/card.service';
 import { ItemsMenuComponent } from "./items-menu/items-menu.component";
 import { OrdresMenuComponent } from "./ordres-menu/ordres-menu.component";
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-card',
   standalone: true,
-  imports: [MatMenuModule, MatSlideToggleModule, ItemsMenuComponent, OrdresMenuComponent],
+  imports: [MatMenuModule, MatSlideToggleModule, ItemsMenuComponent, OrdresMenuComponent, NgClass],
   templateUrl: './card.component.html',
   styleUrl: './card.component.css'
 })
@@ -23,6 +24,7 @@ export class CardComponent {
   minutes = this.cardService.getMinutes(this.id)
   hours = this.cardService.getHours(this.id)
   deviceImage: string = '';
+  deviceType: string = '';
 
   closed = signal(true);
 
@@ -33,10 +35,13 @@ export class CardComponent {
     this.minutes = this.cardService.getMinutes(this.id)
     this.hours = this.cardService.getHours(this.id)
     this.deviceImage = this.cardService.getDeviceImage(this.id);
+    this.deviceType = this.cardService.getDeviceType(this.id);
   }
 
   start(){
     this.cardService.onStart(this.id)
+    console.log(this.deviceType);
+
   }
   end(){
     this.cardService.onEnd(this.id);
