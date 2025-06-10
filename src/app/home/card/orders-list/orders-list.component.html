@@ -1,0 +1,15 @@
+<mat-expansion-panel>
+  <mat-expansion-panel-header>
+    <span>Orders</span>
+  </mat-expansion-panel-header>
+    @for (order of cardService.getOrders(id); track $index) {
+      @if (order.quantity > 0) {
+      <app-item
+        menuType="orders"
+        [itemData]="order"
+        (quantityChange)="cardService.addOrder(id, $event)"
+        (remove)="removeOrder($index)"
+      />
+      }
+    }
+</mat-expansion-panel>

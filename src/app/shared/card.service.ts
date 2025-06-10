@@ -9,6 +9,12 @@ interface cardState {
   interval: any | null;
   startTime: number;
   deviceType: string;
+  orders: WritableSignal<order[]>;
+}
+interface order {
+  item: string,
+  price: number,
+  quantity: number,
 }
 @Injectable({
   providedIn: 'root'
@@ -17,7 +23,7 @@ export class CardService {
   private cards = new Map<string, cardState>();
   IDs= signal<string[]>([]);
 
-  //add card
+  //add card & keep card data in local storage
   counter= 0;
   constructor() {
     // Load cards from localStorage
@@ -39,9 +45,10 @@ export class CardService {
               seconds: signal(state.seconds || '00'),
               StartBtn: signal(state.StartBtn !== undefined ? state.StartBtn : true),
               elapsedTime: state.elapsedTime || 0,
-              interval: null, // Will be reinitialized for running stopwatches
+              interval: null,
               startTime: state.startTime || 0,
-              deviceType: state.deviceType || 'ps4' // Fallback, should be set by addCard
+              deviceType: state.deviceType || 'ps4',
+              orders: signal(state.orders || [])
             });
             // Resume running stopwatch
             if (!state.StartBtn) {
@@ -63,10 +70,12 @@ export class CardService {
           StartBtn: state.StartBtn(),
           elapsedTime: state.elapsedTime,
           startTime: state.startTime,
-          deviceType: state.deviceType
+          deviceType: state.deviceType,
+          orders: state.orders(),
         };
       });
       localStorage.setItem('cards-state', JSON.stringify(cardsState));
+      console.log('Saved cards-state:', cardsState);
     });
   }
 
@@ -74,13 +83,13 @@ export class CardService {
     this.counter++;
     const id = this.counter.toString();
     this.IDs.update(()=>[...this.IDs(),this.counter.toString()])
-    this.initStopwatch(id, deviceType);
+    this.initCard(id, deviceType);
   }
   getDeviceType(id: string){
     return this.cards.get(id)!.deviceType;
   }
   getDeviceImage(id: string): string {
-    this.initStopwatch(id);
+    this.initCard(id);
     const deviceType = this.cards.get(id)!.deviceType;
     const imageMap: { [key: string]: string } = {
       ps4: '/assets/ps4.png',
@@ -100,7 +109,7 @@ export class CardService {
   }
 
   //timer functionality
-  initStopwatch(id: string, deviceType?: string) {
+  initCard(id: string, deviceType?: string) {
     if (!this.cards.has(id)) {
       this.cards.set(id, {
         hours: signal('00'),
@@ -110,33 +119,34 @@ export class CardService {
         elapsedTime: 0,
         interval: null,
         startTime: 0,
-        deviceType: deviceType || 'ps4'
+        deviceType: deviceType || 'ps4',
+        orders: signal([])
       });
     }
   }
 
   getHours(id: string): Signal<string> {
-    this.initStopwatch(id);
+    this.initCard(id);
     return this.cards.get(id)!.hours;
   }
 
   getMinutes(id: string): Signal<string> {
-    this.initStopwatch(id);
+    this.initCard(id);
     return this.cards.get(id)!.minutes;
   }
 
   getSeconds(id: string): Signal<string> {
-    this.initStopwatch(id);
+    this.initCard(id);
     return this.cards.get(id)!.seconds;
   }
 
   getStartBtn(id: string): Signal<boolean> {
-    this.initStopwatch(id);
+    this.initCard(id);
     return this.cards.get(id)!.StartBtn;
   }
 
   onStart(id: string) {
-    this.initStopwatch(id);
+    this.initCard(id);
     const stopwatch = this.cards.get(id)!;
 
     if (stopwatch.interval) return;
@@ -154,7 +164,7 @@ export class CardService {
   }
 
   onEnd(id: string) {
-    this.initStopwatch(id);
+    this.initCard(id);
     const stopwatch = this.cards.get(id)!;
 
     stopwatch.StartBtn.set(true);
@@ -177,5 +187,50 @@ export class CardService {
         card.seconds.set((totalSeconds % 60).toString().padStart(2, '0'));
       }, 1000);
     }
+  }
+
+  // get orders
+  private menuItems: order[] = [
+    { item: 'Big Cola', price: 10, quantity: 0 },
+    { item: 'Burger', price: 20, quantity: 0 },
+    { item: 'Fries', price: 8, quantity: 0 },
+    { item: 'Coffee', price: 12, quantity: 0 },
+    { item: 'Pizza Slice', price: 15, quantity: 0 }
+  ];
+
+  addOrder(id: string, order: order) {
+    const card = this.cards.get(id);
+    if (card) {
+      const currentOrders = card.orders();
+      const existingOrderIndex = currentOrders.findIndex(o => o.item === order.item);
+      let newOrders: order[];
+      if (existingOrderIndex !== -1) {
+        // Update quantity if item exists
+        newOrders = currentOrders.map((o, index) =>
+          index === existingOrderIndex ? { ...o, quantity: order.quantity } : o
+        );
+      } else {
+        // Add new order
+        newOrders = [...currentOrders, order];
+      }
+      card.orders.set(newOrders);
+    }
+  }
+
+  removeOrder(id: string, orderIndex: number) {
+    const card = this.cards.get(id);
+    if (card) {
+      const newOrders = card.orders().filter((_, index) => index !== orderIndex);
+      card.orders.set(newOrders);
+    }
+  }
+
+  getOrders(id: string): order[] {
+    this.initCard(id);
+    return this.cards.get(id)!.orders();
+  }
+
+  getMenuItems(): order[] {
+    return this.menuItems;
   }
 }

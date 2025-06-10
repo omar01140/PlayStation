@@ -1,4 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { CardService } from '../../../../shared/card.service';
 
 @Component({
   selector: 'app-item',
@@ -9,19 +10,24 @@ import { Component, Input } from '@angular/core';
 })
 export class ItemComponent {
   @Input() menuType: 'items' | 'orders' = 'items';
+  @Input() itemData: { item: string; price: number; quantity: number } = { item: '', price: 0, quantity: 0 };
+  @Output() quantityChange = new EventEmitter<{ item: string; price: number; quantity: number }>();
+  @Output() remove = new EventEmitter<void>();
   quantity: number = 0;
 
   increment(): void {
-    this.quantity++;
+    this.itemData.quantity++;
+    this.quantityChange.emit(this.itemData);
   }
 
   decrement(): void {
-    if (this.quantity > 0) {
-      this.quantity--;
+    if (this.itemData.quantity > 0) {
+      this.itemData.quantity--;
+      this.quantityChange.emit(this.itemData);
     }
   }
 
-  remove(){
-    console.log('removed');
+  onRemove(){
+    this.remove.emit();
   }
 }
