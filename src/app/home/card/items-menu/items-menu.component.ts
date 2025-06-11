@@ -1,4 +1,4 @@
-import { Component, inject, input } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { ItemComponent } from "./item/item.component";
 import { CardService } from '../../../shared/card.service';
 
@@ -15,5 +15,15 @@ export class ItemsMenuComponent{
 
   cardService = inject(CardService);
 
-  // menuItems =this.cardService.getMenuItems()
+  menuItems = computed(() => {
+    const orders = this.cardService.getOrders(this.id());
+    return this.cardService.getMenuItems().map(menuItem => {
+      const order = orders.find(o => o.item === menuItem.item);
+      return {
+        item: menuItem.item,
+        price: menuItem.price,
+        quantity: order ? order.quantity : 0
+      };
+    });
+  });
 }

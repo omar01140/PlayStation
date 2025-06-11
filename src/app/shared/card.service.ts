@@ -16,6 +16,10 @@ interface order {
   price: number,
   quantity: number,
 }
+interface MenuItem {
+  item: string;
+  price: number;
+}
 @Injectable({
   providedIn: 'root'
 })
@@ -190,28 +194,33 @@ export class CardService {
   }
 
   // get orders
-  private menuItems: order[] = [
-    { item: 'Big Cola', price: 10, quantity: 0 },
-    { item: 'Burger', price: 20, quantity: 0 },
-    { item: 'Fries', price: 8, quantity: 0 },
-    { item: 'Coffee', price: 12, quantity: 0 },
-    { item: 'Pizza Slice', price: 15, quantity: 0 }
+  private staticMenuItems: MenuItem[] = [
+    { item: 'Big Cola', price: 10 },
+    { item: 'Burger', price: 20 },
+    { item: 'Fries', price: 8 },
+    { item: 'Coffee', price: 12 },
+    { item: 'Pizza Slice', price: 15 }
   ];
 
   addOrder(id: string, order: order) {
     const card = this.cards.get(id);
     if (card) {
       const currentOrders = card.orders();
-      const existingOrderIndex = currentOrders.findIndex(o => o.item === order.item);
       let newOrders: order[];
-      if (existingOrderIndex !== -1) {
-        // Update quantity if item exists
-        newOrders = currentOrders.map((o, index) =>
-          index === existingOrderIndex ? { ...o, quantity: order.quantity } : o
-        );
+      if (order.quantity <= 0) {
+        // Remove order if quantity is 0
+        newOrders = currentOrders.filter(o => o.item !== order.item);
       } else {
-        // Add new order
-        newOrders = [...currentOrders, order];
+        const existingOrderIndex = currentOrders.findIndex(o => o.item === order.item);
+        if (existingOrderIndex !== -1) {
+          // Update quantity if item exists
+          newOrders = currentOrders.map((o, index) =>
+            index === existingOrderIndex ? { ...o, quantity: order.quantity } : o
+          );
+        } else {
+          // Add new order
+          newOrders = [...currentOrders, order];
+        }
       }
       card.orders.set(newOrders);
     }
@@ -230,7 +239,7 @@ export class CardService {
     return this.cards.get(id)!.orders();
   }
 
-  getMenuItems(): order[] {
-    return this.menuItems;
+  getMenuItems(): MenuItem[] {
+    return this.staticMenuItems;
   }
 }

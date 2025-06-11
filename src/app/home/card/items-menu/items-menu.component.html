@@ -1,6 +1,6 @@
 @if(closed() == false){
   <div>
-    @for (menuItem of cardService.getMenuItems(); track menuItem.item) {
+    @for (menuItem of menuItems(); track menuItem.item) {
       <app-item menuType="items" [itemData]='menuItem' (quantityChange)="cardService.addOrder(id(), $event)"/>
     }
   </div>

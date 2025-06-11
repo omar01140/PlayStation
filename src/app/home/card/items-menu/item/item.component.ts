@@ -13,17 +13,20 @@ export class ItemComponent {
   @Input() itemData: { item: string; price: number; quantity: number } = { item: '', price: 0, quantity: 0 };
   @Output() quantityChange = new EventEmitter<{ item: string; price: number; quantity: number }>();
   @Output() remove = new EventEmitter<void>();
-  quantity: number = 0;
 
   increment(): void {
-    this.itemData.quantity++;
-    this.quantityChange.emit(this.itemData);
+    this.quantityChange.emit({
+      ...this.itemData,
+      quantity: this.itemData.quantity + 1
+    });
   }
 
   decrement(): void {
     if (this.itemData.quantity > 0) {
-      this.itemData.quantity--;
-      this.quantityChange.emit(this.itemData);
+      this.quantityChange.emit({
+        ...this.itemData,
+        quantity: this.itemData.quantity - 1
+      });
     }
   }
 
