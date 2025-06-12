@@ -1,4 +1,4 @@
-import { effect, Injectable, signal, Signal, WritableSignal } from '@angular/core';
+import { computed, effect, Injectable, signal, Signal, WritableSignal } from '@angular/core';
 
 interface cardState {
   hours: WritableSignal<string>;
@@ -10,6 +10,7 @@ interface cardState {
   startTime: number;
   deviceType: string;
   orders: WritableSignal<order[]>;
+  totalCost: WritableSignal<number>;
 }
 interface order {
   item: string,
@@ -52,7 +53,8 @@ export class CardService {
               interval: null,
               startTime: state.startTime || 0,
               deviceType: state.deviceType || 'ps4',
-              orders: signal(state.orders || [])
+              orders: signal(state.orders || []),
+              totalCost: signal(state.totalCost || 0)
             });
             // Resume running stopwatch
             if (!state.StartBtn) {
@@ -76,10 +78,10 @@ export class CardService {
           startTime: state.startTime,
           deviceType: state.deviceType,
           orders: state.orders(),
+          totalCost: state.totalCost(),
         };
       });
       localStorage.setItem('cards-state', JSON.stringify(cardsState));
-      console.log('Saved cards-state:', cardsState);
     });
   }
 
@@ -124,7 +126,8 @@ export class CardService {
         interval: null,
         startTime: 0,
         deviceType: deviceType || 'ps4',
-        orders: signal([])
+        orders: signal([]),
+        totalCost: signal(0)
       });
     }
   }
@@ -155,6 +158,7 @@ export class CardService {
 
     if (stopwatch.interval) return;
     stopwatch.StartBtn.set(false);
+    this.updateTotalCost(id);
 
     stopwatch.startTime = Date.now() - stopwatch.elapsedTime;
     stopwatch.interval = setInterval(() => {
@@ -163,6 +167,7 @@ export class CardService {
       stopwatch.hours.set(String(Math.floor(totalSeconds / 3600)).padStart(2, '0'))
       stopwatch.minutes.set(String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0'))
       stopwatch.seconds.set(String(totalSeconds % 60).padStart(2, '0'));
+      this.updateTotalCost(id);
       console.log('from inside the interval', id, this.getMinutes(id)(), this.getSeconds(id)());
     }, 1000);
   }
@@ -174,9 +179,11 @@ export class CardService {
     stopwatch.StartBtn.set(true);
     stopwatch.hours.set('00')
     stopwatch.minutes.set('00')
+    stopwatch.seconds.set('00')
     stopwatch.elapsedTime = 0;
     clearInterval(stopwatch.interval)
     stopwatch.interval = null;
+    this.updateTotalCost(id);
   }
 
   private resumeStopwatch(id: string) {
@@ -189,7 +196,9 @@ export class CardService {
         card.hours.set(Math.floor(totalSeconds / 3600).toString().padStart(2, '0'));
         card.minutes.set(Math.floor((totalSeconds % 3600) / 60).toString().padStart(2, '0'));
         card.seconds.set((totalSeconds % 60).toString().padStart(2, '0'));
+        this.updateTotalCost(id);
       }, 1000);
+      this.updateTotalCost(id);
     }
   }
 
@@ -223,6 +232,7 @@ export class CardService {
         }
       }
       card.orders.set(newOrders);
+      this.updateTotalCost(id);
     }
   }
 
@@ -231,6 +241,7 @@ export class CardService {
     if (card) {
       const newOrders = card.orders().filter((_, index) => index !== orderIndex);
       card.orders.set(newOrders);
+      this.updateTotalCost(id);
     }
   }
 
@@ -241,5 +252,27 @@ export class CardService {
 
   getMenuItems(): MenuItem[] {
     return this.staticMenuItems;
+  }
+  //Total cost
+  private hourCost = 60
+
+  getTotal(id: string): WritableSignal<number> {
+    this.initCard(id);
+    return this.cards.get(id)!.totalCost;
+  }
+
+  private updateTotalCost(id: string) {
+    const card = this.cards.get(id);
+    if (card) {
+      // Orders cost: sum of price * quantity
+      const ordersCost = card.orders().reduce((sum, order) => sum + order.price * order.quantity, 0);
+      // Playtime cost: hours + minutes as fraction of hour
+      const hours = parseInt(card.hours() || '0');
+      const minutes = parseInt(card.minutes() || '0');
+      const playtimeCost = (hours + minutes / 60) * this.hourCost;
+      // Total cost to 2 decimal places
+      const total = Number((ordersCost + playtimeCost).toFixed(2));
+      card.totalCost.set(total);
+    }
   }
 }

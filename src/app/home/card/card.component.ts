@@ -23,6 +23,7 @@ export class CardComponent {
   StartBtn = this.cardService.getStartBtn(this.id)
   minutes = this.cardService.getMinutes(this.id)
   hours = this.cardService.getHours(this.id)
+  cost = this.cardService.getTotal(this.id)
   deviceImage: string = '';
   deviceType: string = '';
 
@@ -34,6 +35,7 @@ export class CardComponent {
     this.StartBtn = this.cardService.getStartBtn(this.id)
     this.minutes = this.cardService.getMinutes(this.id)
     this.hours = this.cardService.getHours(this.id)
+    this.cost = this.cardService.getTotal(this.id)
     this.deviceImage = this.cardService.getDeviceImage(this.id);
     this.deviceType = this.cardService.getDeviceType(this.id);
   }
