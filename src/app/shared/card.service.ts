@@ -183,6 +183,7 @@ export class CardService {
     stopwatch.elapsedTime = 0;
     clearInterval(stopwatch.interval)
     stopwatch.interval = null;
+    stopwatch.orders.set([])
     this.updateTotalCost(id);
   }
 
@@ -254,7 +255,7 @@ export class CardService {
     return this.staticMenuItems;
   }
   //Total cost
-  private hourCost = 60
+  private hourCost = 180
 
   getTotal(id: string): WritableSignal<number> {
     this.initCard(id);

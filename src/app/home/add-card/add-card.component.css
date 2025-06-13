@@ -76,10 +76,11 @@ label:has(input[type="radio"]:checked) {
     }
   }
   input{
-    height: 25px;
-    width: 60%;
+    height: 30px;
+    width: 100%;
+    box-sizing: border-box;
     &::placeholder{
-      font-size: large;
+      font-size: 14px;
     }
   }
 }
