@@ -1,30 +1,38 @@
 <div class="container">
   <div class="name">
     <p>Device Pricing</p>
-    <img src="assets/edit.png" alt="">
+    <img src="assets/edit.png" alt="edit" (click)="onEdit()">
   </div>
-  <div class="devices">
+  <form #form="ngForm" (ngSubmit)="onSubmit()">
+    <div class="devices">
     <div class="PS">
     <p>PS4 :</p>
     <div>
-      <label for="single">Single Player</label>
-      <input type="number" name="single" id="single" min="1">
+      <label for="single4">Single Player</label>
+      <input type="number" name="single4" id="single4" min="1" [disabled]="!edit()" ngModel>
     </div>
     <div>
-      <label for="multi">Multi Player</label>
-      <input type="number" name="multi" id="multi" min="1">
+      <label for="multi4">Multi Player</label>
+      <input type="number" name="multi4" id="multi4" min="1" [disabled]="!edit()" ngModel>
     </div>
     </div>
     <div class="PS">
     <p>PS5 :</p>
     <div>
-      <label for="single">Single Player</label>
-      <input type="number" name="single" id="single" min="1">
+      <label for="single5">Single Player</label>
+      <input type="number" name="single5" id="single5" min="1" [disabled]="!edit()" ngModel>
     </div>
     <div>
-      <label for="multi">Multi Player</label>
-      <input type="number" name="multi" id="multi" min="1">
+      <label for="multi5">Multi Player</label>
+      <input type="number" name="multi5" id="multi5" min="1" [disabled]="!edit()" ngModel>
     </div>
     </div>
-  </div>
+    </div>
+    @if(edit() === true){
+      <div class="controls">
+        <button type="button" (click)="onCancel()">Cancel</button>
+        <button type="submit">Submit</button>
+      </div>
+    }
+  </form>
 </div>

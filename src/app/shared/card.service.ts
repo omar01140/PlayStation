@@ -255,7 +255,9 @@ export class CardService {
     return this.staticMenuItems;
   }
   //Total cost
-  private hourCost = 180
+  private hourCost = 0
+
+  prices = window.localStorage.getItem('prices')
 
   getTotal(id: string): WritableSignal<number> {
     this.initCard(id);
@@ -264,6 +266,16 @@ export class CardService {
 
   private updateTotalCost(id: string) {
     const card = this.cards.get(id);
+    if(this.prices){
+      const price = JSON.parse(this.prices)
+      if(card?.deviceType == 'ps4'){
+        this.hourCost = price.single4
+        console.log(this.hourCost);
+      } else if(card?.deviceType == 'ps5'){
+        this.hourCost = price.single5
+        console.log(this.hourCost);
+      }
+    }
     if (card) {
       // Orders cost: sum of price * quantity
       const ordersCost = card.orders().reduce((sum, order) => sum + order.price * order.quantity, 0);
