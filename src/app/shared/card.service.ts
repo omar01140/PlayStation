@@ -270,10 +270,8 @@ export class CardService {
       const price = JSON.parse(this.prices)
       if(card?.deviceType == 'ps4'){
         this.hourCost = price.single4
-        console.log(this.hourCost);
       } else if(card?.deviceType == 'ps5'){
         this.hourCost = price.single5
-        console.log(this.hourCost);
       }
     }
     if (card) {

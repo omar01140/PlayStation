@@ -30,7 +30,6 @@ export class DevicePricingComponent {
     const getPrices = window.localStorage.getItem('prices');
     if (getPrices) {
       const prices = JSON.parse(getPrices)
-      console.log(prices.multi4);
       setTimeout(() => {
         this.formData().setValue({
           single4: prices.single4,

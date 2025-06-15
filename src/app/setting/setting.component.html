@@ -1,3 +1,7 @@
+@if(AddingTask){
+  <app-add-item (cancel)="onCancelAddingItem()"/>
+}
 <div>
   <app-device-pricing />
+  <app-menu (open)="onAddingItem()" />
 </div>

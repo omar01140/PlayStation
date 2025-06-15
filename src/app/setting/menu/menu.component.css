@@ -1,0 +1,101 @@
+* {
+  box-sizing: border-box;
+}
+.container {
+  width: 900px;
+  background-color: white;
+  border: 1px black solid;
+  border-radius: 10px;
+  padding: 20px 20px;
+  .name {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    p {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 500;
+    }
+    button {
+      font: inherit;
+      cursor: pointer;
+      border: none;
+      padding: 0.35rem 1.25rem;
+      border-radius: 4px;
+      background-color: transparent;
+    }
+    button[type="button"] {
+      color: white;
+      background-color: black;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+    }
+    button[type="button"]:hover,
+    button[type="button"]:active {
+      background-color: rgba(0, 0, 0, 0.713);
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
+    }
+  }
+}
+table {
+  width: 100%;
+  margin: 30px auto;
+  border-collapse: collapse;
+  background-color: #ffffff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+th,
+td {
+  padding: 15px 20px;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+}
+th {
+  background-color: #000000;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+td {
+  color: #1f2937;
+  font-size: 15px;
+}
+tr:last-child td {
+  border-bottom: none;
+}
+tr:hover {
+  background-color: #f9f9f9;
+  transition: background-color 0.2s ease;
+}
+img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  display: block;
+  margin: auto;
+}
+.rname {
+  font-weight: 500;
+}
+.price {
+  color: #16a34a;
+  font-weight: 600;
+  font-size: 15px;
+}
+.actions svg {
+  margin: 0 10px;
+  cursor: pointer;
+  width: 20px;
+  transition: color 0.2s ease;
+}
+.actions .edit-icon:hover path {
+  stroke: #2563eb;
+}
+.actions .delete-icon:hover {
+  fill: #dc2626;
+  stroke: #dc2626;
+}
