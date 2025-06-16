@@ -23,6 +23,11 @@ dialog {
   padding: 1rem;
   top: 5rem;
   z-index: 2;
+  h2{
+    font-size: 35px;
+    font-weight: 500;
+    margin: 10px 0 20px;
+  }
 }
 
 .image-options {

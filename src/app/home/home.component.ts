@@ -16,7 +16,9 @@ export class HomeComponent {
   IDs= this.cardService.IDs;
 
   removeCard(id: string) {
-    this.cardService.removeStopwatch(id);
+    if (window.confirm(`Are you sure you want to Remove the device?`)){
+      this.cardService.removeStopwatch(id);
+    }
   }
 
   onAddingCard(){
