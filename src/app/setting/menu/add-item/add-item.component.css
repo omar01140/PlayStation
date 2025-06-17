@@ -95,3 +95,9 @@ button[type="submit"]:active {
   background-color: rgba(0, 0, 0, 0.713);
   box-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
 }
+
+.error{
+  color:red;
+  font-size: 13px;
+  margin: 0;
+}

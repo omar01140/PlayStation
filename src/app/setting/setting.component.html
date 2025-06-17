@@ -1,7 +1,7 @@
-@if(AddingTask){
-  <app-add-item (cancel)="onCancelAddingItem()"/>
+@if (AddingTask) {
+  <app-add-item [editingItem]="editingItem" (cancel)="onCancelAddingItem()" />
 }
 <div>
   <app-device-pricing />
-  <app-menu (open)="onAddingItem()" />
+  <app-menu (open)="onAddingItem()" (edit)="onEditItem($event)" />
 </div>

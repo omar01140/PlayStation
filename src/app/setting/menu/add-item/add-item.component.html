@@ -1,22 +1,34 @@
 <div class="backdrop" (click)="onCancel()"></div>
 <dialog open>
-  <h2>Add Item</h2>
-  <form (ngSubmit)="onSubmit()">
+  <h2>{{ editingItem ? 'Edit Item' : 'Add Item' }}</h2>
+  <form [formGroup]="itemForm" (ngSubmit)="onSubmit()">
     <div class="form-control">
       <label for="name">Item Name</label>
-      <input type="text" id="name" name="name" required>
+      <input type="text" id="name" formControlName="name" required>
+      @if (itemForm.get('name')?.hasError('required') && itemForm.get('name')?.touched) {
+        <p class="error">Item name is required.</p>
+      }
+      @if (itemForm.get('name')?.hasError('notUnique') && itemForm.get('name')?.touched) {
+        <p class="error">Item name must be unique.</p>
+      }
     </div>
     <div class="form-control">
-      <label for="price">Price</label>
-      <input type="number" id="price" name="price" min="0" required>
+      <label for="price">Price (EGP)</label>
+      <input type="number" id="price" formControlName="price" min="0" step="0.01" required>
+      @if (itemForm.get('price')?.hasError('required') && itemForm.get('price')?.touched) {
+        <p class="error">Price is required.</p>
+      }
+      @if (itemForm.get('price')?.hasError('min') && itemForm.get('price')?.touched) {
+        <p class="error">Price must be at least 0.</p>
+      }
     </div>
     <div class="form-control">
-      <label for="image">Image</label>
-      <input type="file" id="image" name="image" accept="image/*">
+      <label for="image">Image Path (optional)</label>
+      <input type="text" id="image" formControlName="image" placeholder="../assets/menu/default.png">
     </div>
     <p class="actions">
       <button type="button" (click)="onCancel()">Cancel</button>
-      <button type="submit">Create</button>
+      <button type="submit" [disabled]="itemForm.invalid">Save</button>
     </p>
   </form>
 </dialog>

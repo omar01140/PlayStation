@@ -3,6 +3,8 @@ import { DevicePricingComponent } from "./device-pricing/device-pricing.componen
 import { MenuComponent } from "./menu/menu.component";
 import { AddItemComponent } from "./menu/add-item/add-item.component";
 
+import { MenuItem } from '../shared/setting.service';
+
 @Component({
   selector: 'app-setting',
   standalone: true,
@@ -12,11 +14,22 @@ import { AddItemComponent } from "./menu/add-item/add-item.component";
 })
 export class SettingComponent {
   AddingTask = false;
+  editingItem?: MenuItem;
 
-  onAddingItem(){
+  onAddingItem() {
+    // console.log('opened');
+
     this.AddingTask = true;
+    this.editingItem = undefined;
   }
-  onCancelAddingItem(){
+
+  onEditItem(item: MenuItem) {
+    this.AddingTask = true;
+    this.editingItem = item;
+  }
+
+  onCancelAddingItem() {
     this.AddingTask = false;
+    this.editingItem = undefined;
   }
 }

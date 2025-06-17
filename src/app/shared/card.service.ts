@@ -1,4 +1,5 @@
-import { computed, effect, Injectable, signal, Signal, WritableSignal } from '@angular/core';
+import { computed, effect, inject, Injectable, signal, Signal, WritableSignal } from '@angular/core';
+import { SettingsService } from './setting.service';
 
 interface cardState {
   hours: WritableSignal<string>;
@@ -26,6 +27,7 @@ interface MenuItem {
 })
 export class CardService {
   private cards = new Map<string, cardState>();
+  private settingsService = inject(SettingsService);
   IDs= signal<string[]>([]);
 
   //add card & keep card data in local storage
@@ -251,8 +253,8 @@ export class CardService {
     return this.cards.get(id)!.orders();
   }
 
-  getMenuItems(): MenuItem[] {
-    return this.staticMenuItems;
+  getMenuItems(): WritableSignal<MenuItem[]> {
+    return this.settingsService.getMenuItems();
   }
   //Total cost
   private hourCost = 0

@@ -17,7 +17,7 @@ export class ItemsMenuComponent{
 
   menuItems = computed(() => {
     const orders = this.cardService.getOrders(this.id());
-    return this.cardService.getMenuItems().map(menuItem => {
+    return this.cardService.getMenuItems()().map(menuItem => {
       const order = orders.find(o => o.item === menuItem.item);
       return {
         item: menuItem.item,
