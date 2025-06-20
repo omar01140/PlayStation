@@ -1,7 +1,9 @@
 <div class="card">
-  <div [ngClass]="['left', deviceType]">
-    <img [src]="deviceImage" alt="ps" [ngClass]="deviceType" >
-  </div>
+  @if (image) {
+    <div [ngClass]="['left', deviceType]">
+      <img [src]="deviceImage" alt="ps" [ngClass]="deviceType" >
+    </div>
+  }
   <div class="right">
     <div class="name">
       <div>
@@ -17,11 +19,11 @@
       </svg>
       <mat-menu #menu="matMenu" panelClass="custom-menu">
         <div class="menu-toggle-item">
-          <mat-slide-toggle (click)="$event.stopPropagation()" >Multi Player</mat-slide-toggle>
+          <mat-slide-toggle (click)="$event.stopPropagation()" [(ngModel)]="multi" (ngModelChange)="toggleMulti()">Multi Player</mat-slide-toggle>
           <hr>
         </div>
         <div class="menu-toggle-item">
-          <mat-slide-toggle (click)="$event.stopPropagation()" >Image</mat-slide-toggle>
+          <mat-slide-toggle (click)="$event.stopPropagation()" [(ngModel)]="image">Image</mat-slide-toggle>
           <hr>
         </div>
         <div class="menu-toggle-item">
@@ -36,21 +38,27 @@
     </div>
     <div class="timer">
       <span>{{hours()}}:{{minutes()}}</span>
-      @if(StartBtn() == true){
-        <button (click)="start()">
-          <svg width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M10 5.75001L0.25 11.3792V0.12085L10 5.75001Z" fill="white"/>
-          </svg>
-          <span>Start</span>
-        </button>
-      } @else if (StartBtn() == false) {
-        <button (click)="end()" class="stop">
-          <svg width="11" height="11" viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect y="0.25" width="11" height="11" fill="white"/>
-          </svg>
-          <span>Stop</span>
-        </button>
-      }
+      <div>
+        @if (multi()) {
+          <img src="../assets/multi.png" alt="multi">
+        }
+        @if(StartBtn() == true){
+          <button (click)="start()">
+            <svg width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M10 5.75001L0.25 11.3792V0.12085L10 5.75001Z" fill="white"/>
+            </svg>
+            <span>Start</span>
+          </button>
+        } @else if (StartBtn() == false) {
+          <button (click)="end()" class="stop">
+            <svg width="11" height="11" viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect y="0.25" width="11" height="11" fill="white"/>
+            </svg>
+            <span>Stop</span>
+          </button>
+        }
+      </div>
+
     </div>
     <div class="orders">
       <div class="container">

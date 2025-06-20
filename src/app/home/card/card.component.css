@@ -1,4 +1,4 @@
-.card{
+  .card{
   width: 450px;
   /* min-height: 275px; */
   display: flex;
@@ -45,6 +45,15 @@
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
+      div{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        img{
+          width: 25px;
+        }
+      }
       button{
         cursor: pointer;
         padding: 8px 20px;

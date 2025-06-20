@@ -1,4 +1,4 @@
-import { computed, effect, inject, Injectable, signal, Signal, WritableSignal } from '@angular/core';
+import { effect, inject, Injectable, signal, Signal, WritableSignal } from '@angular/core';
 import { SettingsService } from './setting.service';
 
 interface cardState {
@@ -12,6 +12,7 @@ interface cardState {
   deviceType: string;
   orders: WritableSignal<order[]>;
   totalCost: WritableSignal<number>;
+  multi: WritableSignal<boolean>;
 }
 interface order {
   item: string,
@@ -56,7 +57,8 @@ export class CardService {
               startTime: state.startTime || 0,
               deviceType: state.deviceType || 'ps4',
               orders: signal(state.orders || []),
-              totalCost: signal(state.totalCost || 0)
+              totalCost: signal(state.totalCost || 0),
+              multi: signal(state.multi !== undefined ? state.multi : false),
             });
             // Resume running stopwatch
             if (!state.StartBtn) {
@@ -81,6 +83,7 @@ export class CardService {
           deviceType: state.deviceType,
           orders: state.orders(),
           totalCost: state.totalCost(),
+          multi: state.multi(),
         };
       });
       localStorage.setItem('cards-state', JSON.stringify(cardsState));
@@ -116,7 +119,7 @@ export class CardService {
     this.IDs.update(ids => ids.filter(existingId => existingId !== id));
   }
 
-  //timer functionality
+  //card init
   initCard(id: string, deviceType?: string) {
     if (!this.cards.has(id)) {
       this.cards.set(id, {
@@ -129,7 +132,8 @@ export class CardService {
         startTime: 0,
         deviceType: deviceType || 'ps4',
         orders: signal([]),
-        totalCost: signal(0)
+        totalCost: signal(0),
+        multi: signal(false),
       });
     }
   }
@@ -156,6 +160,7 @@ export class CardService {
 
   onStart(id: string) {
     this.initCard(id);
+    this.price(id)
     const stopwatch = this.cards.get(id)!;
 
     if (stopwatch.interval) return;
@@ -176,16 +181,17 @@ export class CardService {
 
   onEnd(id: string) {
     this.initCard(id);
-    const stopwatch = this.cards.get(id)!;
+    const card = this.cards.get(id)!;
 
-    stopwatch.StartBtn.set(true);
-    stopwatch.hours.set('00')
-    stopwatch.minutes.set('00')
-    stopwatch.seconds.set('00')
-    stopwatch.elapsedTime = 0;
-    clearInterval(stopwatch.interval)
-    stopwatch.interval = null;
-    stopwatch.orders.set([])
+    card.StartBtn.set(true);
+    card.hours.set('00')
+    card.minutes.set('00')
+    card.seconds.set('00')
+    card.elapsedTime = 0;
+    clearInterval(card.interval)
+    card.interval = null;
+    card.orders.set([])
+    card.multi.set(false)
     this.updateTotalCost(id);
   }
 
@@ -206,13 +212,6 @@ export class CardService {
   }
 
   // get orders
-  private staticMenuItems: MenuItem[] = [
-    { item: 'Big Cola', price: 10 },
-    { item: 'Burger', price: 20 },
-    { item: 'Fries', price: 8 },
-    { item: 'Coffee', price: 12 },
-    { item: 'Pizza Slice', price: 15 }
-  ];
 
   addOrder(id: string, order: order) {
     const card = this.cards.get(id);
@@ -259,7 +258,31 @@ export class CardService {
   //Total cost
   private hourCost = 0
 
-  prices = window.localStorage.getItem('prices')
+  setMulti(id: string, multi: boolean) {
+    this.initCard(id);
+    const card = this.cards.get(id)!;
+    card.multi.set(multi);
+    this.updateTotalCost(id);
+  }
+
+  getMulti(id: string): WritableSignal<boolean> {
+    this.initCard(id);
+    return this.cards.get(id)!.multi;
+  }
+
+  price(id: string){
+    const prices = window.localStorage.getItem('prices')
+    const card = this.cards.get(id);
+    if(prices){
+      const price = JSON.parse(prices)
+      if(card?.deviceType == 'ps4'){
+        return card.multi() ? price.multi4 : price.single4;
+      } else if(card?.deviceType == 'ps5'){
+        return card.multi() ? price.multi5 : price.single5;
+      }
+    }
+    return 0;
+  }
 
   getTotal(id: string): WritableSignal<number> {
     this.initCard(id);
@@ -268,21 +291,14 @@ export class CardService {
 
   private updateTotalCost(id: string) {
     const card = this.cards.get(id);
-    if(this.prices){
-      const price = JSON.parse(this.prices)
-      if(card?.deviceType == 'ps4'){
-        this.hourCost = price.single4
-      } else if(card?.deviceType == 'ps5'){
-        this.hourCost = price.single5
-      }
-    }
+    let price = this.price(id)
     if (card) {
       // Orders cost: sum of price * quantity
       const ordersCost = card.orders().reduce((sum, order) => sum + order.price * order.quantity, 0);
       // Playtime cost: hours + minutes as fraction of hour
       const hours = parseInt(card.hours() || '0');
       const minutes = parseInt(card.minutes() || '0');
-      const playtimeCost = (hours + minutes / 60) * this.hourCost;
+      const playtimeCost = (hours + minutes / 60) * price;
       // Total cost to 2 decimal places
       const total = Number((ordersCost + playtimeCost).toFixed(2));
       card.totalCost.set(total);

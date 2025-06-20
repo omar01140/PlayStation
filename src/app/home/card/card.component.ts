@@ -5,11 +5,12 @@ import { CardService } from '../../shared/card.service';
 import { ItemsMenuComponent } from "./items-menu/items-menu.component";
 import { NgClass } from '@angular/common';
 import { OrdersListComponent } from './orders-list/orders-list.component';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-card',
   standalone: true,
-  imports: [MatMenuModule, MatSlideToggleModule, ItemsMenuComponent, OrdersListComponent, NgClass],
+  imports: [MatMenuModule, MatSlideToggleModule, ItemsMenuComponent, OrdersListComponent, NgClass, FormsModule],
   templateUrl: './card.component.html',
   styleUrl: './card.component.css'
 })
@@ -24,8 +25,10 @@ export class CardComponent {
   minutes = this.cardService.getMinutes(this.id)
   hours = this.cardService.getHours(this.id)
   cost = this.cardService.getTotal(this.id)
+  multi = this.cardService.getMulti(this.id);
   deviceImage: string = '';
   deviceType: string = '';
+  image:boolean = true;
 
   closed = signal(true);
 
@@ -38,6 +41,7 @@ export class CardComponent {
     this.cost = this.cardService.getTotal(this.id)
     this.deviceImage = this.cardService.getDeviceImage(this.id);
     this.deviceType = this.cardService.getDeviceType(this.id);
+    this.multi = this.cardService.getMulti(this.id);
   }
 
   start(){
@@ -54,5 +58,9 @@ export class CardComponent {
 
   onOpenMenu(){
     this.closed.set(!this.closed())
+  }
+
+  toggleMulti() {
+    this.cardService.setMulti(this.id, this.multi());
   }
 }
