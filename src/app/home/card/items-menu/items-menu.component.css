@@ -1,5 +1,5 @@
 div{
-  height: 210px;
+  max-height: 210px;
   position: absolute;
   background: white;
   color: black;

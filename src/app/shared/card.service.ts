@@ -1,4 +1,12 @@
-import { effect, inject, Injectable, signal, Signal, WritableSignal } from '@angular/core';
+import {
+  effect,
+  inject,
+  Injectable,
+  signal,
+  Signal,
+  WritableSignal,
+} from '@angular/core';
+import { Router } from '@angular/router';
 import { SettingsService } from './setting.service';
 
 interface cardState {
@@ -15,24 +23,25 @@ interface cardState {
   multi: WritableSignal<boolean>;
 }
 interface order {
-  item: string,
-  price: number,
-  quantity: number,
+  item: string;
+  price: number;
+  quantity: number;
 }
 interface MenuItem {
   item: string;
   price: number;
 }
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CardService {
   private cards = new Map<string, cardState>();
   private settingsService = inject(SettingsService);
-  IDs= signal<string[]>([]);
+  private router = inject(Router);
+  IDs = signal<string[]>([]);
 
   //add card & keep card data in local storage
-  counter= 0;
+  counter = 0;
   constructor() {
     // Load cards from localStorage
     const savedIDs = localStorage.getItem('cards-array');
@@ -42,7 +51,10 @@ export class CardService {
       const parsedCards = JSON.parse(savedCards);
       if (Array.isArray(parsedIDs) && typeof parsedCards === 'object') {
         this.IDs.set(parsedIDs);
-        this.counter = Math.max(...parsedIDs.map((id: string) => parseInt(id) || 0), 0);
+        this.counter = Math.max(
+          ...parsedIDs.map((id: string) => parseInt(id) || 0),
+          0
+        );
         // Restore card states
         for (const id of parsedIDs) {
           const state = parsedCards[id];
@@ -51,7 +63,9 @@ export class CardService {
               hours: signal(state.hours || '00'),
               minutes: signal(state.minutes || '00'),
               seconds: signal(state.seconds || '00'),
-              StartBtn: signal(state.StartBtn !== undefined ? state.StartBtn : true),
+              StartBtn: signal(
+                state.StartBtn !== undefined ? state.StartBtn : true
+              ),
               elapsedTime: state.elapsedTime || 0,
               interval: null,
               startTime: state.startTime || 0,
@@ -90,13 +104,13 @@ export class CardService {
     });
   }
 
-  addCard(deviceType:string){
+  addCard(deviceType: string) {
     this.counter++;
     const id = this.counter.toString();
-    this.IDs.update(()=>[...this.IDs(),this.counter.toString()])
+    this.IDs.update(() => [...this.IDs(), this.counter.toString()]);
     this.initCard(id, deviceType);
   }
-  getDeviceType(id: string){
+  getDeviceType(id: string) {
     return this.cards.get(id)!.deviceType;
   }
   getDeviceImage(id: string): string {
@@ -116,7 +130,7 @@ export class CardService {
       clearInterval(card.interval);
     }
     this.cards.delete(id);
-    this.IDs.update(ids => ids.filter(existingId => existingId !== id));
+    this.IDs.update((ids) => ids.filter((existingId) => existingId !== id));
   }
 
   //card init
@@ -160,7 +174,7 @@ export class CardService {
 
   onStart(id: string) {
     this.initCard(id);
-    this.price(id)
+    this.price(id);
     const stopwatch = this.cards.get(id)!;
 
     if (stopwatch.interval) return;
@@ -171,11 +185,20 @@ export class CardService {
     stopwatch.interval = setInterval(() => {
       stopwatch.elapsedTime = Date.now() - stopwatch.startTime;
       const totalSeconds = Math.floor(stopwatch.elapsedTime / 1000);
-      stopwatch.hours.set(String(Math.floor(totalSeconds / 3600)).padStart(2, '0'))
-      stopwatch.minutes.set(String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0'))
+      stopwatch.hours.set(
+        String(Math.floor(totalSeconds / 3600)).padStart(2, '0')
+      );
+      stopwatch.minutes.set(
+        String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0')
+      );
       stopwatch.seconds.set(String(totalSeconds % 60).padStart(2, '0'));
       this.updateTotalCost(id);
-      console.log('from inside the interval', id, this.getMinutes(id)(), this.getSeconds(id)());
+      console.log(
+        'from inside the interval',
+        id,
+        this.getMinutes(id)(),
+        this.getSeconds(id)()
+      );
     }, 1000);
   }
 
@@ -184,15 +207,16 @@ export class CardService {
     const card = this.cards.get(id)!;
 
     card.StartBtn.set(true);
-    card.hours.set('00')
-    card.minutes.set('00')
-    card.seconds.set('00')
+    card.hours.set('00');
+    card.minutes.set('00');
+    card.seconds.set('00');
     card.elapsedTime = 0;
-    clearInterval(card.interval)
+    clearInterval(card.interval);
     card.interval = null;
-    card.orders.set([])
-    card.multi.set(false)
+    card.orders.set([]);
+    card.multi.set(false);
     this.updateTotalCost(id);
+    this.once = false;
   }
 
   private resumeStopwatch(id: string) {
@@ -202,8 +226,16 @@ export class CardService {
       card.interval = setInterval(() => {
         card.elapsedTime = Date.now() - card.startTime;
         const totalSeconds = Math.floor(card.elapsedTime / 1000);
-        card.hours.set(Math.floor(totalSeconds / 3600).toString().padStart(2, '0'));
-        card.minutes.set(Math.floor((totalSeconds % 3600) / 60).toString().padStart(2, '0'));
+        card.hours.set(
+          Math.floor(totalSeconds / 3600)
+            .toString()
+            .padStart(2, '0')
+        );
+        card.minutes.set(
+          Math.floor((totalSeconds % 3600) / 60)
+            .toString()
+            .padStart(2, '0')
+        );
         card.seconds.set((totalSeconds % 60).toString().padStart(2, '0'));
         this.updateTotalCost(id);
       }, 1000);
@@ -220,13 +252,17 @@ export class CardService {
       let newOrders: order[];
       if (order.quantity <= 0) {
         // Remove order if quantity is 0
-        newOrders = currentOrders.filter(o => o.item !== order.item);
+        newOrders = currentOrders.filter((o) => o.item !== order.item);
       } else {
-        const existingOrderIndex = currentOrders.findIndex(o => o.item === order.item);
+        const existingOrderIndex = currentOrders.findIndex(
+          (o) => o.item === order.item
+        );
         if (existingOrderIndex !== -1) {
           // Update quantity if item exists
           newOrders = currentOrders.map((o, index) =>
-            index === existingOrderIndex ? { ...o, quantity: order.quantity } : o
+            index === existingOrderIndex
+              ? { ...o, quantity: order.quantity }
+              : o
           );
         } else {
           // Add new order
@@ -241,7 +277,9 @@ export class CardService {
   removeOrder(id: string, orderIndex: number) {
     const card = this.cards.get(id);
     if (card) {
-      const newOrders = card.orders().filter((_, index) => index !== orderIndex);
+      const newOrders = card
+        .orders()
+        .filter((_, index) => index !== orderIndex);
       card.orders.set(newOrders);
       this.updateTotalCost(id);
     }
@@ -256,7 +294,7 @@ export class CardService {
     return this.settingsService.getMenuItems();
   }
   //Total cost
-  private hourCost = 0
+  private hourCost = 0;
 
   setMulti(id: string, multi: boolean) {
     this.initCard(id);
@@ -270,16 +308,50 @@ export class CardService {
     return this.cards.get(id)!.multi;
   }
 
-  price(id: string){
-    const prices = window.localStorage.getItem('prices')
+  private once = false;
+  PriceErrorHandling(deviceType?: string) {
+    if (!this.once && deviceType) {
+      this.once = true;
+      return confirm(
+        `the price table has empty places, do you want to adjust it?`
+      );
+    } else if (!this.once && !deviceType) {
+      this.once = true;
+      return alert('Please set the prices table first');
+    }
+    return false;
+  }
+
+  price(id: string) {
+    const prices = window.localStorage.getItem('prices');
     const card = this.cards.get(id);
-    if(prices){
-      const price = JSON.parse(prices)
-      if(card?.deviceType == 'ps4'){
-        return card.multi() ? price.multi4 : price.single4;
-      } else if(card?.deviceType == 'ps5'){
-        return card.multi() ? price.multi5 : price.single5;
+    if (prices) {
+      const Parsedprices = JSON.parse(prices);
+      for (let deviceType in Parsedprices) {
+        const checkedPrice = Parsedprices[deviceType];
+        console.log(checkedPrice);
+        if (checkedPrice == '0' || checkedPrice == null || checkedPrice == '') {
+          let edit = this.PriceErrorHandling(deviceType);
+          if (edit) {
+            setTimeout(() => {
+              this.onEnd(id);
+            }, 1);
+            this.router.navigate(['/setting']);
+          }
+        }
       }
+
+      if (card?.deviceType == 'ps4') {
+        return card.multi() ? Parsedprices.multi4 : Parsedprices.single4;
+      } else if (card?.deviceType == 'ps5') {
+        return card.multi() ? Parsedprices.multi5 : Parsedprices.single5;
+      }
+    } else {
+      this.PriceErrorHandling();
+      setTimeout(() => {
+        this.onEnd(id);
+      }, 1);
+      this.router.navigate(['/setting']);
     }
     return 0;
   }
@@ -291,10 +363,12 @@ export class CardService {
 
   private updateTotalCost(id: string) {
     const card = this.cards.get(id);
-    let price = this.price(id)
+    let price = this.price(id);
     if (card) {
       // Orders cost: sum of price * quantity
-      const ordersCost = card.orders().reduce((sum, order) => sum + order.price * order.quantity, 0);
+      const ordersCost = card
+        .orders()
+        .reduce((sum, order) => sum + order.price * order.quantity, 0);
       // Playtime cost: hours + minutes as fraction of hour
       const hours = parseInt(card.hours() || '0');
       const minutes = parseInt(card.minutes() || '0');

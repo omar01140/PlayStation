@@ -24,6 +24,7 @@ export class DevicePricingComponent {
   }
   onSubmit(){
     window.localStorage.setItem('prices', JSON.stringify(this.formData()?.value))
+    this.getPrices()
     this.edit.set(false)
   }
   getPrices(){
@@ -32,10 +33,10 @@ export class DevicePricingComponent {
       const prices = JSON.parse(getPrices)
       setTimeout(() => {
         this.formData().setValue({
-          single4: prices.single4,
-          multi4: prices.multi4,
-          single5: prices.single5,
-          multi5: prices.multi5,
+          single4: prices.single4 || 0,
+          multi4: prices.multi4 || 0,
+          single5: prices.single5 || 0,
+          multi5: prices.multi5 || 0,
         })
       }, 1);
     }
