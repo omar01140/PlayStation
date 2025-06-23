@@ -18,12 +18,12 @@ export class AddCardComponent {
 
   cardService= inject(CardService);
 
-  onCancel(){
-    this.deviceType = '';
-    this.custom = false;
-    this.customPrice = null;
-    this.cancel.emit()
-  }
+    onCancel(){
+      this.deviceType = '';
+      this.custom = false;
+      this.customPrice = null;
+      this.cancel.emit()
+    }
   onSubmit(){
     if (this.deviceType) {
       console.log('deviceType',this.deviceType);

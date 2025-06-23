@@ -360,6 +360,10 @@ export class CardService {
     this.initCard(id);
     return this.cards.get(id)!.totalCost;
   }
+  playtimeCost = signal(0)
+  getplaytimeCost(){
+    return this.playtimeCost
+  }
 
   private updateTotalCost(id: string) {
     const card = this.cards.get(id);
@@ -376,6 +380,7 @@ export class CardService {
       // Total cost to 2 decimal places
       const total = Number((ordersCost + playtimeCost).toFixed(2));
       card.totalCost.set(total);
+      this.playtimeCost.set(playtimeCost)
     }
   }
 }
