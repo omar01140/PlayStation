@@ -5,33 +5,36 @@
     <table class="bill-table">
       <thead>
         <tr>
-          <th>Item Description</th>
+          <th>Item</th>
           <th>Quantity</th>
           <th>Price</th>
+          <th>Total</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td>{{deviceType}}</td>
+          <td>{{deviceType}}{{multi()? ' MULTI' : ''}}</td>
           <td>{{hours()}}:{{minutes()}}</td>
-          <td>{{playTimeCost}}</td>
+          <td>{{hourPrice}}</td>
+          <td>{{playCost}}</td>
         </tr>
         @for (order of orders; track order.item) {
           <tr>
             <td>{{order.item}}</td>
             <td>{{order.quantity}}</td>
             <td>{{order.price}}</td>
+            <td>{{order.price * order.quantity}}</td>
           </tr>
         }
         <tr class="total-row">
-          <td colspan="2">Total</td>
+          <td colspan="3">TOTAL</td>
           <td>{{total()}}</td>
         </tr>
       </tbody>
     </table>
   </div>
   <p class="actions">
-    <button type="button" class="print">
+    <button type="button" class="print" (click)="onPrint()">
       <svg style="fill: white;"
         fill="#000000"
         height="20px"

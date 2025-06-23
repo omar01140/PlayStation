@@ -64,8 +64,10 @@ export class CardComponent {
     this.cardService.onStart(this.id);
     console.log(this.deviceType);
   }
+  isEndInitiated = false;
   end() {
-    this.cardService.onEnd(this.id);
+    this.bill = true;
+    this.isEndInitiated = true;
   }
   onRemove() {
     this.remove.emit(this.id);
@@ -82,8 +84,21 @@ export class CardComponent {
   bill = false;
   onOpenBill() {
     this.bill = true;
+    this.isEndInitiated = false;
   }
+
   onCancelBill() {
-    this.bill = false;
+    if (this.isEndInitiated) {
+      const confirmed = window.confirm(
+        'If you close the bill now, you will not be able to retrieve this data again. Are you sure?'
+      );
+      if (confirmed) {
+        this.bill = false;
+        this.isEndInitiated = false;
+        this.cardService.onEnd(this.id);
+      }
+    } else {
+      this.bill = false;
+    }
   }
 }
