@@ -4,7 +4,7 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 ## Try Live Demo
 
-ps-manager-6f4d3.web.app
+[Visit my website](ps-manager-6f4d3.web.app)
 
 ## Development server
 
