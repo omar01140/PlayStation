@@ -3,10 +3,10 @@ mat-sidenav-container{
   height: 100vh;
 }
 mat-sidenav-content{
-    transition: all .5s;
+    transition: all .9s;
 }
 mat-sidenav{
-  width: 300px;
+  width: 250px;
   border-right: black 1px solid;
   background-color: white;
   transition: all .5s;
@@ -19,7 +19,7 @@ mat-sidenav{
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px;
+    padding: 17px;
     div {
       display: flex;
       align-items: flex-end;
@@ -69,11 +69,11 @@ mat-sidenav{
     }
   }
 .shrink{
-  width: 65px;
+  width: 60px;
 }
 .shrinkMargin{
-  margin-left: 65px !important;
+  margin-left: 60px !important;
 }
 .expandMargin{
-  margin-left: 300px !important;
+  margin-left: 250px !important;
 }

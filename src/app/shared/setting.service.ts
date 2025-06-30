@@ -20,7 +20,6 @@ export class SettingsService {
         const parsedItems = JSON.parse(savedMenuItems);
         if (Array.isArray(parsedItems)) {
           this.menuItems.set(parsedItems);
-          console.log('Loaded menu-items:', parsedItems);
         }
       } catch (error) {
         console.error('Error parsing menu-items from localStorage:', error);
@@ -29,13 +28,11 @@ export class SettingsService {
       // Seed with default menu items (migrated from CardService)
       const defaultItems: MenuItem[] = [];
       this.menuItems.set(defaultItems);
-      console.log('Seeded menu-items:', defaultItems);
     }
 
     // Persist menu items to localStorage on change
     effect(() => {
       localStorage.setItem('menu-items', JSON.stringify(this.menuItems()));
-      console.log('Saved menu-items:', this.menuItems());
     });
   }
 

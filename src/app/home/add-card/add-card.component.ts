@@ -26,9 +26,6 @@ export class AddCardComponent {
     }
   onSubmit(){
     if (this.deviceType) {
-      console.log('deviceType',this.deviceType);
-      console.log(this.custom);
-      console.log(this.customPrice);
       this.cardService.addCard(this.deviceType);
       this.cancel.emit();
     }

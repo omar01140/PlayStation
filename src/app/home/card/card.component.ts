@@ -62,7 +62,6 @@ export class CardComponent {
 
   start() {
     this.cardService.onStart(this.id);
-    console.log(this.deviceType);
   }
   isEndInitiated = false;
   end() {

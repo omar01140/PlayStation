@@ -176,8 +176,14 @@ export class CardService {
     this.initCard(id);
     this.price(id);
     const stopwatch = this.cards.get(id)!;
+    let price = this.price(id);
 
     if (stopwatch.interval) return;
+    if (price == 0 || price == null || price == "" ) {
+      alert('Please set the prices table first');
+      this.router.navigate(['/setting']);
+      return
+    };
     stopwatch.StartBtn.set(false);
     this.updateTotalCost(id);
 
@@ -216,7 +222,6 @@ export class CardService {
     card.orders.set([]);
     card.multi.set(false);
     this.updateTotalCost(id);
-    this.once = false;
   }
 
   private resumeStopwatch(id: string) {
@@ -308,49 +313,17 @@ export class CardService {
     return this.cards.get(id)!.multi;
   }
 
-  private once = false;
-  PriceErrorHandling(deviceType?: string) {
-    if (!this.once && deviceType) {
-      this.once = true;
-      return confirm(
-        `the price table has empty places, do you want to adjust it?`
-      );
-    } else if (!this.once && !deviceType) {
-      this.once = true;
-      return alert('Please set the prices table first');
-    }
-    return false;
-  }
 
   price(id: string) {
     const prices = window.localStorage.getItem('prices');
     const card = this.cards.get(id);
     if (prices) {
       const Parsedprices = JSON.parse(prices);
-      for (let deviceType in Parsedprices) {
-        const checkedPrice = Parsedprices[deviceType];
-        if (checkedPrice == '0' || checkedPrice == null || checkedPrice == '') {
-          let edit = this.PriceErrorHandling(deviceType);
-          if (edit) {
-            setTimeout(() => {
-              this.onEnd(id);
-            }, 1);
-            this.router.navigate(['/setting']);
-          }
-        }
-      }
-
       if (card?.deviceType == 'ps4') {
         return card.multi() ? Parsedprices.multi4 : Parsedprices.single4;
       } else if (card?.deviceType == 'ps5') {
         return card.multi() ? Parsedprices.multi5 : Parsedprices.single5;
       }
-    } else {
-      this.PriceErrorHandling();
-      setTimeout(() => {
-        this.onEnd(id);
-      }, 1);
-      this.router.navigate(['/setting']);
     }
     return 0;
   }

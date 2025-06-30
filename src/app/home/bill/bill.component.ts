@@ -39,6 +39,6 @@ export class BillComponent {
     this.cancel.emit();
   }
   onPrint(){
-    window.print()
+    this.cancel.emit();
   }
 }

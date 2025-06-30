@@ -11,8 +11,7 @@
 dialog {
   position: fixed;
   top: 50% !important;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translateY(-50%);
   width: 90%;
   max-width: 30rem;
   background-color: white;
@@ -21,7 +20,6 @@ dialog {
   box-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
   overflow: hidden;
   padding: 1rem;
-  top: 5rem;
   z-index: 2;
   h2{
     font-size: 35px;
