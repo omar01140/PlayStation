@@ -10,7 +10,7 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
   styleUrl: './side.component.css'
 })
 export class SideComponent {
-  small = signal(false);
+  small = signal(true);
 
   constructor() {
     // Initialize from localStorage
